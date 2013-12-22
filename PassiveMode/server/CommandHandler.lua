@@ -37,7 +37,6 @@ function OnPlayerDeath(args)
     for p in Server:GetPlayers() do
         Network:Send(p, "PassiveTable", peaceful)
     end
-
 end
 
 Events:Subscribe("PlayerChat", OnPlayerChat)
