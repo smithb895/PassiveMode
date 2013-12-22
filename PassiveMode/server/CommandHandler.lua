@@ -1,21 +1,23 @@
--- PassiveMode by RockyTV
+-- PassiveMode originally by RockyTV https://github.com/RockyTV/PassiveMode
+-- Redone by Anzu https://github.com/smithb895/PassiveMode
 
-function PlayerChat(args)
-	
-	if args.text == "/passive" then
-		
-		peaceful[args.player:GetSteamId().id] = not peaceful[args.player:GetSteamId().id]
-		
-		if peaceful[args.player:GetSteamId().id] then
+function OnPlayerChat(args)
+	if args.text == "/passive" or args.text == "/afk" then
+        --args.player:SendChatMessage("You just used the /passive command", color)
+		if peaceful[args.player:GetSteamId().id] == nil then
+            peaceful[args.player:GetSteamId().id] = args.player
+            local allowDamage = false
 			args.player:SendChatMessage("[PassiveMode] Passive Mode is now enabled.", color)
 			args.player:SendChatMessage("[PassiveMode] While in Passive Mode, you can't attack other players, and the other players can't attack you.", color)
 			args.player:SendChatMessage("[PassiveMode] Type /passive to disable Passive Mode.", color)
 		else
+            peaceful[args.player:GetSteamId().id] = nil
+            local allowDamage = true
 			args.player:SendChatMessage("[PassiveMode] Passive Mode is now disabled.", color)
 			args.player:SendChatMessage("[PassiveMode] Type /passive to enable Passive Mode.", color)
 		end
 		
-		Network:Send(args.player, "AllowDamage", not peaceful[args.player:GetSteamId().id])
+		Network:Send(args.player, "AllowDamage", allowDamage)
 		
 		for p in Server:GetPlayers() do
 			Network:Send(p, "PassiveTable", peaceful)
@@ -27,4 +29,15 @@ function PlayerChat(args)
 	return true
 end
 
-Events:Subscribe("PlayerChat", PlayerChat)
+function OnPlayerDeath(args)
+    peaceful[args.player:GetSteamId().id] = nil
+    local allowDamage = true
+    
+    Network:Send(args.player, "AllowDamage", allowDamage)
+    for p in Server:GetPlayers() do
+        Network:Send(p, "PassiveTable", peaceful)
+    end
+
+end
+
+Events:Subscribe("PlayerChat", OnPlayerChat)
