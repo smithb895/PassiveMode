@@ -1,6 +1,6 @@
 PassiveMode
 ===========
-Originally by RockyTV
+Originally by RockyTV 
 Edited by Anzu
 
 PassiveMode is a plugin for the Just Cause 2 Multiplayer mod. 

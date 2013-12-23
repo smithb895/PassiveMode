@@ -1,5 +1,5 @@
 -- PassiveMode originally by RockyTV https://github.com/RockyTV/PassiveMode
--- Redone by Anzu
+-- Redone by Anzu https://github.com/smithb895/PassiveMode
 
 class 'Passive'
 
