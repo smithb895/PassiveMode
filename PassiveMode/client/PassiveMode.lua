@@ -1,14 +1,14 @@
 -- PassiveMode originally by RockyTV https://github.com/RockyTV/PassiveMode
--- Redone by Anzu https://github.com/smithb895/PassiveMode
+-- Redone by Anzu
 
-allowDamage = true
+--allowDamage = true
 passives = {}
 
 function WeaponDamage(args)
     if passives[args.attacker:GetSteamId().id] ~= nil or passives[LocalPlayer:GetSteamId().id] ~= nil then
         return false
     end
-	return allowDamage
+	return true
 end
 
 
@@ -55,10 +55,12 @@ function RenderTag()
     for id,plyObj in pairs(passives) do
 		if passives[id] ~= nil then -- If passive, draw tag
             local playerPos = plyObj:GetPosition()
-            local dist = playerPos:Distance2D( Camera:GetPosition() )
-            if dist < 1000 then
-                DrawPassiveTag( playerPos, dist )
-            end
+			if playerPos ~= nil then
+				local dist = playerPos:Distance2D( Camera:GetPosition() )
+				if dist < 1000 then
+					DrawPassiveTag( playerPos, dist )
+				end
+			end
 		end
 	end
 end
@@ -67,7 +69,7 @@ Events:Subscribe("LocalPlayerExplosionHit", WeaponDamage)
 Events:Subscribe("LocalPlayerBulletHit", WeaponDamage)
 Events:Subscribe("LocalPlayerForcePulseHit", WeaponDamage)
 
-Network:Subscribe("AllowDamage", function(args) allowDamage = args end)
+--Network:Subscribe("AllowDamage", function(args) allowDamage = args end)
 Network:Subscribe("PassiveTable", function(args) passives = args end)
 
 Events:Subscribe( "Render", RenderTag )
